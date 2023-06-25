@@ -1,0 +1,22 @@
+# Directories
+node_modules/
+dist/
+coverage/
+
+# Environment files
+.env
+
+# TypeScript specific files
+*.js
+*.js.map
+*.d.ts
+
+# Editor and IDE specific files
+.vscode/
+.idea/
+*.sublime-*
+*.swp
+
+# Build tools and package manager files
+yarn.lock
+package-lock.json

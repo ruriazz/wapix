@@ -1,0 +1,21 @@
+{
+    "auto": true,
+    "collection": "accountRoles",
+    "uniqueField": "slug",
+    "data": [
+        {
+            "uid": "",
+            "slug": "master",
+            "name": "Master",
+            "enable": true,
+            "level": 0
+        },
+        {
+            "uid": "",
+            "slug": "admin",
+            "name": "Admin",
+            "enable": true,
+            "level": 1
+        }
+    ]
+}
