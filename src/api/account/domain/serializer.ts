@@ -1,9 +1,10 @@
-import { AuthenticatedData } from "./_types";
+import { type Account, AccountRole } from '@src/entities/@typed';
+import { type AuthenticatedData } from './interface';
 
-const authenticatedResponse = (data: AuthenticatedData | AuthenticatedData[]): Record<string, any> | Record<string, any>[] => {
+const authenticatedResponse = (data: AuthenticatedData | AuthenticatedData[]): Record<string, any> | Array<Record<string, any>> => {
     if (Array.isArray(data)) {
         const results: Record<string, any> = [];
-        data.forEach(item => {
+        data.forEach((item) => {
             results.push(authenticatedResponse(item));
         });
 
@@ -30,8 +31,24 @@ const authenticatedResponse = (data: AuthenticatedData | AuthenticatedData[]): R
         },
         authToken: objectData.authToken,
         refreshToken: objectData.refreshToken,
-        expiredAt: objectData.expiredAt
-    }
-}
+    };
+};
 
-export { authenticatedResponse };
+const profileResponse = (data: Account): Record<string, any> => {
+    return {
+        uid: data.uid,
+        name: data.name,
+        email: data.email,
+        role: {
+            uid: data.role?.uid,
+            slug: data.role?.slug,
+            name: data.role?.name,
+        },
+        enable: data.enable,
+        createdAt: data.createdAt,
+        updatedAt: data.updatedAt,
+        verifiedAt: data.verifiedAt,
+    };
+};
+
+export { authenticatedResponse, profileResponse };

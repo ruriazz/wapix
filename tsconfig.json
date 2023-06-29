@@ -1,50 +1,29 @@
 {
-  "compilerOptions": {
-    "target": "es2016",
-    "jsx": "preserve",
-    "module": "CommonJS",
-    "rootDir": ".",
-    "moduleResolution": "Node",
-    "baseUrl": "./",
-    "paths": {
-      "@src/*": [
-        "./src/*"
-      ],
-      "@vendor": [
-        "interface/vendor"
-      ],
-      "@core/*": [
-        "src/core/*"
-      ],
-      "@utils/*": [
-        "src/utils/*"
-      ],
-      "@helpers/*": [
-        "src/utils/helpers/*"
-      ],
-      "@api/*": [
-        "src/api/*"
-      ],
-      "@entity/*": [
-        "src/entities/*"
-      ],
-      "@repo/*": [
-        "src/repositories/*"
-      ],
-      "@const": [
-        "src/const"
-      ],
+    "compilerOptions": {
+        "target": "es2016",
+        "jsx": "preserve",
+        "module": "CommonJS",
+        "rootDir": ".",
+        "moduleResolution": "Node",
+        "baseUrl": "./",
+        "paths": {
+            "@src/*": ["./src/*"],
+            "@vendor": ["interface/vendor"],
+            "@core/*": ["src/core/*"],
+            "@utils/*": ["src/utils/*"],
+            "@helpers/*": ["src/utils/helpers/*"],
+            "@api/*": ["src/api/*"],
+            "@entity/*": ["src/entities/*"],
+            "@repo/*": ["src/repositories/*"],
+            "@const": ["src/const"],
+            "@decorators/*": ["src/services/decorators/*"]
+        },
+        "outDir": "dist",
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "skipLibCheck": true
     },
-    "outDir": "dist",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": true,
-  },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules/**/*"
-  ]
+    "include": ["interface/**/*", "src/**/*"],
+    "exclude": ["node_modules/**/*"]
 }

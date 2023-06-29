@@ -1,5 +1,5 @@
-import Manager from "@src/core/manager";
-import loadRouter from "./router";
+import Manager from '@src/core/manager';
+import loadRouter from './router';
 
 const manager = new Manager();
 

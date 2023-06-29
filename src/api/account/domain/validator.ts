@@ -1,17 +1,25 @@
-import { checkSchema } from "express-validator";
+import { checkSchema } from 'express-validator';
 
 const authSchema = checkSchema({
     email: {
-        in: ["body"],
+        in: ['body'],
         notEmpty: true,
         isEmail: true,
-        errorMessage: "Invalid email",
+        errorMessage: 'Invalid email',
     },
     password: {
-        in: ["body"],
+        in: ['body'],
         notEmpty: true,
-        errorMessage: "Invalid password",
+        errorMessage: 'Invalid password',
     },
 });
 
-export { authSchema };
+const refreshTokenSchema = checkSchema({
+    refreshToken: {
+        in: ['body'],
+        notEmpty: true,
+        errorMessage: 'refreshToken data is required',
+    },
+});
+
+export { authSchema, refreshTokenSchema };

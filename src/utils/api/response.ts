@@ -1,37 +1,42 @@
-import { ApiContext } from "@vendor";
-import { StatusCodes, ReasonPhrases } from "http-status-codes";
+import { type ApiContext } from '@vendor';
+import { StatusCodes, ReasonPhrases } from 'http-status-codes';
 
-interface _status {
+type _status = {
     status?: number;
     reason?: string;
-}
-interface _responseBody {
+};
+type _responseBody = {
     status: number;
     message?: string;
     data?: any;
     pagination?: Pagination;
-}
-interface Pagination {
+};
+type Pagination = {
     totalItems: number;
     currentPage: number;
     totalPages: number;
     pageSize: number;
-}
+};
 
 class Status {
     // Success
     static Ok: _status = { status: StatusCodes.OK, reason: ReasonPhrases.OK };
-    static Accepted: _status = { status: StatusCodes.ACCEPTED, reason: ReasonPhrases.ACCEPTED };
+    static Accepted: _status = {
+        status: StatusCodes.ACCEPTED,
+        reason: ReasonPhrases.ACCEPTED,
+    };
 
     // Error
     static BadRequest: _status = {
         status: StatusCodes.BAD_REQUEST,
         reason: ReasonPhrases.BAD_REQUEST,
     };
+
     static Unauthorized: _status = {
         status: StatusCodes.UNAUTHORIZED,
-        reason: ReasonPhrases.UNAUTHORIZED
+        reason: ReasonPhrases.UNAUTHORIZED,
     };
+
     static InternalError: _status = {
         status: StatusCodes.INTERNAL_SERVER_ERROR,
         reason: ReasonPhrases.INTERNAL_SERVER_ERROR,
@@ -55,14 +60,12 @@ const sendJson = (
         pagination: props?.pagination || undefined,
     };
 
-    Object.entries(props.headers || {}).forEach(([key, value]) =>
-        ctx.response.setHeader(key, value)
-    );
+    Object.entries(props.headers != null || {}).forEach(([key, value]) => ctx.response.setHeader(key, value));
     Object.entries(body).forEach(([key, value]) => {
-        if (typeof value == undefined) Reflect.deleteProperty(body, key);
+        if (typeof value === undefined) Reflect.deleteProperty(body, key);
     });
 
     ctx.response.status(props?.status?.status || StatusCodes.OK).json(body);
 };
 
-export { Status, sendJson, Pagination };
+export { Status, sendJson, type Pagination };

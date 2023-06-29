@@ -1,17 +1,17 @@
-import { Pagination } from "@utils/api/response";
+// import { type Pagination } from '@utils/api/response'
 
-interface PaginatedData {
-    result: any[];
-    pagination: Pagination;
-}
+// type PaginatedData = {
+//   result: any[]
+//   pagination: Pagination
+// }
 
-const buildPagination = (
-    data: any[],
-    currentPage: number = 1,
-    limit: number = 10
-) => {
-    // const result: PaginatedData = {result: data, pagination: };
-    // return result;
-};
+// const buildPagination = (
+//   data: any[],
+//   currentPage = 1,
+//   limit = 10
+// ) => {
+//   // const result: PaginatedData = {result: data, pagination: };
+//   // return result;
+// }
 
-export { buildPagination };
+// export { buildPagination }

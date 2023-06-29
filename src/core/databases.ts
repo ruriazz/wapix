@@ -1,10 +1,10 @@
-import { Databases as Interface, Settings } from "@vendor";
-import mongoose from "mongoose";
-import Log from "@core/log";
+import { type Databases as Interface, type Settings } from '@vendor';
+import mongoose from 'mongoose';
+import Log from '@core/log';
 
 export default class Databases implements Interface {
-    private _settings;
-    private _log;
+    private readonly _settings;
+    private readonly _log;
 
     NoSQL = mongoose;
 
@@ -27,7 +27,7 @@ export default class Databases implements Interface {
             });
         } catch (err) {
             this._log.warning({
-                message: "failed connect to mongodb",
+                message: 'failed connect to mongodb',
                 extra: { dsn: this._settings.MONGO_DSN },
                 error: err,
             });
