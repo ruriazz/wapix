@@ -1,4 +1,4 @@
-import { type Handlers } from './domain/interface';
+import { type Handlers } from './domain/@interface';
 import newAccountDomainService from './services';
 import { authenticatedResponse, profileResponse } from './domain/serializer';
 import { type ApiContext, type Manager } from '@vendor';

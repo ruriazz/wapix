@@ -1,5 +1,5 @@
-import { type Services } from './domain/interface';
-import { type AuthData, type AuthenticatedData } from './domain/interface';
+import { type Services } from './domain/@interface';
+import { type AuthData, type AuthenticatedData } from './domain/@interface';
 import { type ApiContext, type Manager } from '@vendor';
 import { type Account, type AuthSession } from '@src/entities/@typed';
 import newAccountRepository from '@repo/account';

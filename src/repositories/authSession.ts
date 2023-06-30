@@ -1,5 +1,5 @@
 import { type Manager } from '@vendor';
-import { type _AuthSessionRepository } from './_interface';
+import { type _AuthSessionRepository } from './@interface';
 import AuthSessionModel, { type AuthSession } from '@entity/authSession';
 import { type Account } from '@src/entities/@typed';
 import { Types } from 'mongoose';

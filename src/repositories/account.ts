@@ -1,4 +1,4 @@
-import { type _AccountRepository } from './_interface';
+import { type _AccountRepository } from './@interface';
 import { type ApiContext, type Manager } from '@vendor';
 import AccountModel, { type Account } from '@entity/account';
 

@@ -1,5 +1,5 @@
-import { type Account, AccountRole } from '@src/entities/@typed';
-import { type AuthenticatedData } from './interface';
+import { type Account } from '@src/entities/@typed';
+import { type AuthenticatedData } from './@interface';
 
 const authenticatedResponse = (data: AuthenticatedData | AuthenticatedData[]): Record<string, any> | Array<Record<string, any>> => {
     if (Array.isArray(data)) {
@@ -43,6 +43,7 @@ const profileResponse = (data: Account): Record<string, any> => {
             uid: data.role?.uid,
             slug: data.role?.slug,
             name: data.role?.name,
+            level: data.role?.level,
         },
         enable: data.enable,
         createdAt: data.createdAt,

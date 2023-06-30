@@ -6,7 +6,7 @@
     "scripts": {
         "start": "nodemon",
         "build": "npm-run-all clean tsc tsc-alias",
-        "format": "ts-migrate sort src/**/*.ts interface/**/*.ts && prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
+        "format": "ts-migrate sort src/**/*.ts && prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
     },
     "repository": {
         "type": "git",

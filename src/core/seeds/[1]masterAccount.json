@@ -1,0 +1,25 @@
+{
+    "type": "once",
+    "collection": "accounts",
+    "uniqueField": "email",
+    "data": [
+        {
+            "_id": "649d8e5103f604320db7b099",
+            "uid": "f7b6edb5-953d-40a5-8c2c-0a0b96d21691",
+            "name": "Master Admin",
+            "email": "default@admin.com",
+            "role": {
+                "_id": "6496bd5d7bf4cd9c79e268bb",
+                "uid": "064ea68a-92d4-4f32-9940-5f0666d67c85",
+                "slug": "master",
+                "name": "Master",
+                "enable": true,
+                "level": 0
+            },
+            "password": "pwd__changeMe!",
+            "enable": true,
+            "createdAt": "ts__2023-06-24T16:03:05.339Z",
+            "verifiedAt": "ts__2023-06-24T16:03:05.339Z"
+        }
+    ]
+}

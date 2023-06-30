@@ -8,7 +8,7 @@
         "baseUrl": "./",
         "paths": {
             "@src/*": ["./src/*"],
-            "@vendor": ["interface/vendor"],
+            "@vendor": ["src/@vendor"],
             "@core/*": ["src/core/*"],
             "@utils/*": ["src/utils/*"],
             "@helpers/*": ["src/utils/helpers/*"],
@@ -24,6 +24,8 @@
         "strict": true,
         "skipLibCheck": true
     },
-    "include": ["interface/**/*", "src/**/*"],
+    "include": [
+      "src/**/*"
+    ],
     "exclude": ["node_modules/**/*"]
 }

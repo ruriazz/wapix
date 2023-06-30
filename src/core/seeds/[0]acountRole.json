@@ -1,17 +1,19 @@
 {
-    "auto": true,
+    "type": "once",
     "collection": "accountRoles",
     "uniqueField": "slug",
     "data": [
         {
-            "uid": "",
+            "_id": "6496bd5d7bf4cd9c79e268bb",
+            "uid": "064ea68a-92d4-4f32-9940-5f0666d67c85",
             "slug": "master",
             "name": "Master",
             "enable": true,
             "level": 0
         },
         {
-            "uid": "",
+            "_id": "6496bd5d7bf4cd9c79e268bd",
+            "uid": "b0dd3079-bd81-4c67-b0cd-a11a6d970b55",
             "slug": "admin",
             "name": "Admin",
             "enable": true,

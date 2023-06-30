@@ -1,31 +1,54 @@
 import fs from 'fs';
-import { v4 as uuidv4 } from 'uuid';
 import { mongoose } from '@core/databases';
-import Settings from '@core/settings';
+import { makePassword } from '@src/utils/helpers/hash';
+import { staticSettings } from '@src/const';
 
 const loadSeeds = async () => {
-    const settings = new Settings();
     getAllSeeds('src/core/seeds/').forEach((seed) => {
-        if (seed.auto) {
-            const collection = mongoose.connection.collection(seed.collection);
+        switch (seed.type) {
+            case 'once':
+                const collection = mongoose.connection.collection(seed.collection);
 
-            seed.data.forEach(async (item: Record<string, any>) => {
-                item.uid = uuidv4();
-                const existing = await collection.findOne({
-                    [seed.uniqueField]: item[seed.uniqueField],
-                });
-
-                if (existing == null) {
-                    await collection.insertOne(item).then((ins) => {
-                        console.log(ins);
+                seed.data.forEach(async (item: Record<string, any>) => {
+                    item = await serializeRecord(item);
+                    const existing = await collection.findOne({
+                        [seed.uniqueField]: item[seed.uniqueField],
                     });
-                } else if (settings.NODE_ENV == 'development') {
-                    delete item.uid;
-                    await collection.updateOne({ [seed.uniqueField]: item[seed.uniqueField] }, { $set: item });
-                }
-            });
+
+                    if (existing == null) {
+                        await collection.insertOne(item).then((ins) => {
+                            console.log(ins);
+                        });
+                    }
+                });
+                break;
+            default:
+                break;
         }
     });
+};
+
+const serializeRecord = async (data: Record<string, any>): Promise<Record<string, any>> => {
+    const result: Record<string, any> = {};
+    for (const key in data) {
+        if (data.hasOwnProperty(key)) {
+            let value = data[key];
+
+            if (typeof value === 'object' && data !== null) {
+                value = await serializeRecord(value);
+            } else if (key === '_id') {
+                value = new mongoose.Types.ObjectId(value);
+            } else if (typeof value == 'string' && value.startsWith('pwd__')) {
+                value = await makePassword(value.replace('pwd__', ''), staticSettings.PASSWORD_BCRYPTY_ROUND);
+            } else if (typeof value == 'string' && value.startsWith('ts__')) {
+                value = new Date(value.replace('ts__', ''));
+            }
+
+            result[key] = value;
+        }
+    }
+
+    return result;
 };
 
 const getAllSeeds = (folderPath: string): Array<Record<string, any>> => {
