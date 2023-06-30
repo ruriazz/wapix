@@ -52,4 +52,6 @@ const profileResponse = (data: Account): Record<string, any> => {
     };
 };
 
-export { authenticatedResponse, profileResponse };
+const updateInfoResponse = (data: Account): Record<string, any> => profileResponse(data);
+
+export { authenticatedResponse, profileResponse, updateInfoResponse };

@@ -4,6 +4,7 @@ import { type ApiContext } from '@vendor';
 export type _AccountRepository = {
     findOne: (filter: Record<string, any>, ctx?: ApiContext) => Promise<Account | null>;
     createOne: (account: Account, ctx?: ApiContext) => Promise<Account | undefined>;
+    updateOne: (account: Account, newData: Record<string, any>) => Promise<boolean>;
 };
 
 export type _AccountRoleRepository = {

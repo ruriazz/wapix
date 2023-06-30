@@ -1,4 +1,4 @@
-import { type Services } from './domain/@interface';
+import { UpdateInfoData, type Services, UpdateInfoResult } from './domain/@interface';
 import { type AuthData, type AuthenticatedData } from './domain/@interface';
 import { type ApiContext, type Manager } from '@vendor';
 import { type Account, type AuthSession } from '@src/entities/@typed';
@@ -7,6 +7,7 @@ import newAccountRoleRepositoy from '@repo/accountRole';
 import newAuthSessionRepository from '@repo/authSession';
 import { staticSettings } from '@const';
 import { createJwt, createToken, makePassword, verifyPassword } from '@helpers/hash';
+import { Strings } from '@helpers/transform';
 
 const newAccountDomainService = (manager: Manager): Services => {
     const accountRepo = newAccountRepository(manager);
@@ -86,6 +87,53 @@ const newAccountDomainService = (manager: Manager): Services => {
             });
 
             return { account: ctx.authData?.account!, authToken: authToken, refreshToken: refreshToken };
+        }
+
+        async updateAccountInfo(ctx: ApiContext, newData: UpdateInfoData): Promise<UpdateInfoResult> {
+            const account = ctx.authData!.account;
+            const passwordValidated = await verifyPassword(account.password!, newData.password);
+            if (!passwordValidated) {
+                return {
+                    success: false,
+                    errors: [
+                        {
+                            field: 'password',
+                            message: 'wrong password',
+                        },
+                    ],
+                } as UpdateInfoResult;
+            }
+
+            const errors: Record<string, any>[] = [];
+            const fieldUpdate: Record<string, any> = {};
+
+            if (newData.newName) {
+                newData.newName = Strings.removeExtraWhitespace(newData.newName);
+                fieldUpdate['name'] = Strings.toTitleCase(newData.newName);
+            }
+
+            if (newData.newEmail) {
+                if (newData.newEmail != account.email) {
+                    const existsEmail = await accountRepo.findOne({ email: newData.newEmail });
+                    if (existsEmail) {
+                        errors.push({ field: 'email', message: 'already in use' });
+                    } else {
+                        fieldUpdate['email'] = newData.newEmail;
+                    }
+                }
+            }
+
+            if (newData.newPassword) {
+                fieldUpdate['password'] = await makePassword(newData.newPassword, staticSettings.PASSWORD_BCRYPTY_ROUND);
+            }
+
+            if (errors.length > 0) {
+                return { success: false, errors: errors } as UpdateInfoResult;
+            }
+
+            await accountRepo.updateOne(account, fieldUpdate);
+
+            return { success: true, result: await accountRepo.findOne({ uid: account.uid }) } as UpdateInfoResult;
         }
 
         private async _validAuthCheck(account: Account): Promise<boolean> {

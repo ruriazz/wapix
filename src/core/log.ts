@@ -26,6 +26,7 @@ export default class Log extends BaseLogger<any> implements Interface {
                     errorName: ['bold', 'bgRedBright', 'whiteBright'],
                     fileName: ['yellow'],
                 },
+                maskValuesOfKeys: ['password', 'newPassword'],
             },
             null,
             5

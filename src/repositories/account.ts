@@ -29,6 +29,19 @@ const newAccountRepository = (manager: Manager) => {
                 });
             }
         }
+
+        async updateOne(account: Account, newData: Record<string, any>): Promise<boolean> {
+            try {
+                await AccountModel.updateOne({ _id: account._id }, { $set: newData }).exec();
+                return true;
+            } catch (err) {
+                manager.Log.error({
+                    message: 'AccountRepository.updateOne Exception',
+                    error: err,
+                });
+                return false;
+            }
+        }
     })();
 };
 
