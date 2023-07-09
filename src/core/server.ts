@@ -1,4 +1,6 @@
 import express, { type Request, type Response, type NextFunction, type Router } from 'express';
+import http from 'http';
+import { Server as SocketServer, Socket } from 'socket.io';
 import { getReasonPhrase, StatusCodes } from 'http-status-codes';
 import bodyParser from 'body-parser';
 import compression from 'compression';
@@ -14,26 +16,43 @@ export default class Server implements Interface {
     private readonly _log: Log;
 
     public App = express();
+    public Socket: SocketServer | undefined;
+
+    private httpServer = http.createServer(this.App);
 
     constructor(settings?: Settings) {
         this._settings = settings || new Settings();
         this._log = new Log(settings);
         this._loadMiddleware();
+        this._activateSocketio();
     }
 
     private _loadMiddleware() {
-        const middlewares = [cors({ credentials: true }), bodyParser.json(), compression(), this.responseLogMiddleware];
+        const middlewares = [cors({ credentials: true }), bodyParser.json(), compression(), this.responseLogMiddleware, this.exceptionHandler];
 
         this.App.use(...middlewares);
+    }
+
+    private async _activateSocketio(): Promise<void> {
+        this.Socket = new SocketServer(this.httpServer, {
+            path: '/ws',
+            transports: ['websocket']
+        });
+
+        Promise.resolve();
     }
 
     public Router(): Router {
         return express.Router();
     }
 
-    public runServer(port?: number) {
-        this.App.use(this.exceptionHandler);
-        this.App.listen(port || 8080, () => {
+    public socketNamespaces() {
+
+    }
+
+    public async runServer(port?: number) {
+
+        this.httpServer.listen(port || 8080, () => {
             this._log.info({
                 message: `server running on http://localhost:${port || 8080}`,
             });

@@ -3,5 +3,4 @@ import loadRouter from './router';
 
 const manager = new Manager();
 
-loadRouter(manager);
-manager.Server.runServer();
+loadRouter(manager).then(() => manager.Server.runServer());

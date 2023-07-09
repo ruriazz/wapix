@@ -5,13 +5,7 @@ import { Status, sendJson } from './response';
 
 type apiContextCallback = (ctx: ApiContext) => void;
 
-enum Auth {
-    None,
-    Default,
-    Restricted,
-}
-
-const useApiContext = (func: apiContextCallback, auth?: Auth) => {
+const useApiContext = (func: apiContextCallback) => {
     return function (req: Request, res: Response, next: NextFunction) {
         const ctx = { request: req, response: res, next, attribute: {} };
         const errors = validationResult(req);
@@ -28,4 +22,4 @@ const useApiContext = (func: apiContextCallback, auth?: Auth) => {
     };
 };
 
-export { useApiContext, Auth };
+export { useApiContext };

@@ -2,6 +2,8 @@ import { type Mongoose } from 'mongoose';
 import { type Express, type NextFunction, type Router, type Request, type Response } from 'express';
 import { type Account } from '@src/entities/@typed';
 import { type JwtPayload } from 'jsonwebtoken';
+import { Redis } from 'ioredis';
+import { Server as SocketServer } from 'socket.io';
 
 export type Log = {
     info: (data: { message: string; extra?: object | null }) => void;
@@ -18,6 +20,7 @@ export type Settings = {
     SECRET_KEY: string;
     UTC_LOG_TZ: boolean;
     MONGO_DSN: string;
+    REDIS_STORAGE_URL: string;
     MONGO_DBNAME: string;
     JWT_EXPIRED: number;
     JWT_ISSUER: string;
@@ -25,6 +28,7 @@ export type Settings = {
 
 export type Server = {
     App: Express;
+    Socket: SocketServer | undefined;
 
     Router: () => Router;
     runServer: (port?: number) => void;
@@ -32,6 +36,7 @@ export type Server = {
 
 export type Databases = {
     NoSQL: Mongoose;
+    Redis: Redis;
 };
 
 export type Manager = {

@@ -20,3 +20,7 @@ coverage/
 # Build tools and package manager files
 yarn.lock
 package-lock.json
+
+# General Development
+dump.rdb
+.DS_Store

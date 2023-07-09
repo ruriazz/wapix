@@ -9,6 +9,7 @@ export default class Settings implements Interface {
     SECRET_KEY: string = process.env.SECRET_KEY || 'NodeSecretKey__';
     UTC_LOG_TZ: boolean = (process.env.UTC_LOG_TZ || 'false') == 'true';
     MONGO_DSN: string = process.env.MONGO_DSN || '';
+    REDIS_STORAGE_URL: string = process.env.REDIS_STORAGE_URL || '';
     MONGO_DBNAME: string = process.env.MONGO_DBNAME || '';
     JWT_EXPIRED: number = parseInt(process.env.JWT_EXPIRED || '900');
     JWT_ISSUER: string = process.env.JWT_ISSUER || '';
