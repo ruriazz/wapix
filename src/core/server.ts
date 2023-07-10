@@ -36,7 +36,7 @@ export default class Server implements Interface {
     private async _activateSocketio(): Promise<void> {
         this.Socket = new SocketServer(this.httpServer, {
             path: '/ws',
-            transports: ['websocket']
+            transports: ['websocket'],
         });
 
         Promise.resolve();
@@ -46,12 +46,9 @@ export default class Server implements Interface {
         return express.Router();
     }
 
-    public socketNamespaces() {
-
-    }
+    public socketNamespaces() {}
 
     public async runServer(port?: number) {
-
         this.httpServer.listen(port || 8080, () => {
             this._log.info({
                 message: `server running on http://localhost:${port || 8080}`,

@@ -4,6 +4,7 @@ import { type Account } from '@src/entities/@typed';
 import { type JwtPayload } from 'jsonwebtoken';
 import { Redis } from 'ioredis';
 import { Server as SocketServer } from 'socket.io';
+import WAWebJS from 'whatsapp-web.js';
 
 export type Log = {
     info: (data: { message: string; extra?: object | null }) => void;
@@ -58,4 +59,10 @@ export type ApiContext = {
     next: NextFunction;
     authData?: AuthData;
     attribute?: Record<string, any>;
+};
+
+export type WhatsappClient = {
+    id: string;
+    phone: string;
+    instance: WAWebJS.Client;
 };

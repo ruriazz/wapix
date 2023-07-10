@@ -3,14 +3,12 @@ import mongoose from 'mongoose';
 import { Redis } from 'ioredis';
 import Log from '@core/log';
 
-
 export default class Databases implements Interface {
     private readonly _settings;
     private readonly _log;
 
     NoSQL = mongoose;
     Redis = new Redis();
-
 
     constructor(settings: Settings) {
         this._settings = settings;
@@ -58,7 +56,12 @@ export default class Databases implements Interface {
             client.disconnect();
         }
     }
+
+    public static async beginNosql(dsn: string, dbName: string): Promise<mongoose.Mongoose> {
+        const nosql = new mongoose.Mongoose();
+        await nosql.connect(dsn, { dbName: dbName });
+        return nosql as mongoose.Mongoose;
+    }
 }
 
 export { mongoose };
-

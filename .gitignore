@@ -24,3 +24,4 @@ package-lock.json
 # General Development
 dump.rdb
 .DS_Store
+.whatsapp

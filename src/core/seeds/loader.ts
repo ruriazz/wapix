@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { mongoose } from '@core/databases';
-import { makePassword } from '@src/utils/helpers/hash';
+import { makePassword } from '@helpers/hash';
 import { staticSettings } from '@src/const';
 
 const loadSeeds = async () => {

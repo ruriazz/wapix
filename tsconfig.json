@@ -16,7 +16,8 @@
             "@entity/*": ["src/entities/*"],
             "@repo/*": ["src/repositories/*"],
             "@const": ["src/const"],
-            "@decorators/*": ["src/services/decorators/*"]
+            "@decorators/*": ["src/services/decorators/*"],
+            "@extensions/*": ["src/extensions/*"]
         },
         "outDir": "dist",
         "esModuleInterop": true,

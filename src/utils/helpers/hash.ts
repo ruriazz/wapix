@@ -4,6 +4,8 @@ import { Account, AuthSession } from '@src/entities/@typed';
 import bcrypt from 'bcrypt';
 import jwt, { type JwtPayload } from 'jsonwebtoken';
 import crypto from 'crypto';
+import { blake2b, blake2bHex } from 'blakejs';
+
 const settings = new Settings();
 
 const makePassword = async (plainText: string, round?: number): Promise<string> => {
@@ -88,4 +90,9 @@ const createToken = (length = 8): string => {
     return token;
 };
 
-export { makePassword, verifyPassword, createJwt, parseJwt, sha512Encrypt, sha512Verify, sha256Encrypt, sha256Verify, createToken };
+const blake2Encode = (text: string, outlen: number = 8) => {
+    const hash = blake2bHex(text, undefined, outlen);
+    return hash;
+};
+
+export { makePassword, verifyPassword, createJwt, parseJwt, sha512Encrypt, sha512Verify, sha256Encrypt, sha256Verify, createToken, blake2Encode };

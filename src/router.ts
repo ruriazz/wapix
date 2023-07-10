@@ -9,10 +9,7 @@ interface CustomError extends Error {
 }
 
 export default async function loadRouter(manager: Manager): Promise<void> {
-    const routes = [
-        initAccountAPIRoute(manager),
-        initWhatsappAPIRoute(manager)
-    ];
+    const routes = [initAccountAPIRoute(manager), initWhatsappAPIRoute(manager)];
 
     initWhatsappSocketNamespace(manager);
 
