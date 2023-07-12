@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { mongoose } from '@core/databases';
 import { makePassword } from '@helpers/hash';
-import { staticSettings } from '@src/const';
+import { staticSettings } from '@const';
 
 const loadSeeds = async () => {
     getAllSeeds('src/core/seeds/').forEach((seed) => {

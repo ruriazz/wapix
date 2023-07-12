@@ -28,3 +28,20 @@ export type AuthSession = {
     authToken?: string;
     refreshToken?: string;
 } & Document;
+
+export type WhatsappClient = {
+    uid?: string;
+    name: string;
+    number: string;
+    status?: string;
+    authCollection?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
+    authenticatedAt?: Date;
+} & Document;
+
+export type WhatsappEnrollSession = {
+    uid: string;
+    name: string;
+    phoneNumber: string;
+};

@@ -1,5 +1,5 @@
 import { type ApiContext } from '@vendor';
-import { type Account } from '@src/entities/@typed';
+import { type Account } from '@entity/@typed';
 
 export type Handlers = {
     auth: (ctx: ApiContext) => Promise<void>;

@@ -1,4 +1,4 @@
-import { type Account } from '@src/entities/@typed';
+import { type Account } from '@entity/@typed';
 import { type AuthenticatedData } from './@interface';
 
 const authenticatedResponse = (data: AuthenticatedData | AuthenticatedData[]): Record<string, any> | Array<Record<string, any>> => {

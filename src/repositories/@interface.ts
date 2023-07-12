@@ -1,4 +1,4 @@
-import { type AccountRole, type Account, type AuthSession } from '@src/entities/@typed';
+import { type AccountRole, type Account, type AuthSession, WhatsappEnrollSession, WhatsappClient } from '@entity/@typed';
 import { type ApiContext } from '@vendor';
 
 export type _AccountRepository = {
@@ -17,4 +17,16 @@ export type _AuthSessionRepository = {
     createOne: (authSession: AuthSession) => Promise<AuthSession | undefined>;
     updateOne: (authSession: AuthSession, newData: Record<string, any>) => Promise<boolean>;
     removeOne: (authSession: AuthSession) => Promise<boolean>;
+};
+
+export type _WhatsappClientRepository = {
+    findOne: (filter: Record<string, any>) => Promise<WhatsappClient | null>;
+    createOne: (whatsappClient: WhatsappClient) => Promise<WhatsappClient | null>;
+    updateOne: (whatsappClient: WhatsappClient, newData: Record<string, any>) => Promise<boolean>;
+};
+
+export type _WhatsappRepository = {
+    saveEnrollSession: (data: WhatsappEnrollSession, seconds: number) => Promise<void>;
+    getEnrollSession: (uid: string) => Promise<WhatsappEnrollSession | undefined>;
+    removeEnrollSession: (data: WhatsappEnrollSession) => Promise<void>;
 };

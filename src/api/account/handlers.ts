@@ -4,7 +4,7 @@ import { authenticatedResponse, profileResponse, updateInfoResponse } from './do
 import { type ApiContext, type Manager } from '@vendor';
 import { Status, sendJson } from '@utils/api/response';
 import { authenticatedHandler } from '@decorators/authentication';
-import { defaultMessage } from '@src/const';
+import { defaultMessage } from '@const';
 
 const newAccountHandler = (manager: Manager): Handlers => {
     const service = newAccountDomainService(manager);
@@ -39,7 +39,7 @@ const newAccountHandler = (manager: Manager): Handlers => {
 
         @authenticatedHandler(manager, true)
         async refreshToken(ctx: ApiContext): Promise<void> {
-            const result = await service.refreshToken(ctx, ctx.request.body['refreshToken']);
+            const result = await service.refreshToken(ctx, ctx.request.body.refreshToken);
             if (result) {
                 return sendJson(ctx, { data: authenticatedResponse(result), status: Status.Accepted });
             }
@@ -49,10 +49,10 @@ const newAccountHandler = (manager: Manager): Handlers => {
         @authenticatedHandler(manager)
         async updateInfo(ctx: ApiContext): Promise<void> {
             const result = await service.updateAccountInfo(ctx, {
-                newName: ctx.request.body['newName'],
-                newEmail: ctx.request.body['newEmail'],
-                newPassword: ctx.request.body['newPassword'],
-                password: ctx.request.body['password'],
+                newName: ctx.request.body.newName,
+                newEmail: ctx.request.body.newEmail,
+                newPassword: ctx.request.body.newPassword,
+                password: ctx.request.body.password,
             } as UpdateInfoData);
 
             if (!result.success) {

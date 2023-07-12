@@ -1,7 +1,7 @@
 import { type Manager } from '@vendor';
 import { type _AuthSessionRepository } from './@interface';
 import AuthSessionModel, { type AuthSession } from '@entity/authSession';
-import { type Account } from '@src/entities/@typed';
+import { type Account } from '@entity/@typed';
 import { Types } from 'mongoose';
 
 const newAuthSessionRepository = (manager: Manager) => {

@@ -1,16 +1,14 @@
 import { Log, Manager, WhatsappClient } from '@vendor';
-import { blake2Encode } from '@helpers/hash';
+import Databases from '@core/databases';
+import { blake2Encode, createBasicAuth } from '@helpers/hash';
+import { WawebEvent } from '@utils/waweb/wawebEvent';
 import WAWebJS, { Client, RemoteAuth } from 'whatsapp-web.js';
 import { MongoStore } from 'wwebjs-mongo';
-import Databases from '@core/databases';
+import axios from 'axios';
+import { staticSettings } from '@src/const';
 
-const SETTINGS = {
-    authDataPath: '.whatsapp/auth',
-    localCachePath: '.whatsapp/cache',
-    remoteAuthDb: 'whatsapp_client',
-};
-
-type onQRStringReceive = (value: string) => void;
+type onQrReceived = (value: string) => void;
+type onAuthSuccess = () => void;
 
 export default class Whatsapp {
     private manager: Manager;
@@ -22,7 +20,7 @@ export default class Whatsapp {
     }
 
     private async authStore(): Promise<WAWebJS.Store> {
-        const nosql = await Databases.beginNosql(this.manager.Settings.MONGO_DSN, SETTINGS.remoteAuthDb);
+        const nosql = await Databases.beginNosql(this.manager.Settings.MONGO_DSN, staticSettings.WAWEB_REMOTEAUTH_DB);
         const store = new MongoStore({ mongoose: nosql }) as WAWebJS.Store;
         return store;
     }
@@ -32,7 +30,7 @@ export default class Whatsapp {
             clientId: clientId,
             store: await this.authStore(),
             backupSyncIntervalMs: 300000,
-            dataPath: SETTINGS.authDataPath,
+            dataPath: staticSettings.WAWEB_AUTHDATA_PATH,
         });
 
         return remoteAuth;
@@ -46,34 +44,41 @@ export default class Whatsapp {
             puppeteer: {
                 args: ['--no-sandbox'],
             },
-            webVersionCache: { type: 'local', path: SETTINGS.localCachePath, strict: false } as WAWebJS.WebCacheOptions,
+            webVersionCache: {
+                type: staticSettings.WAWEB_WEB_CACHE_TYPE,
+                path: staticSettings.WAWEB_LOCAL_CACHE_PATH,
+                strict: false,
+            } as WAWebJS.WebCacheOptions,
         });
 
         return Promise.resolve({ id: clientId, phone: phoneNumber, instance: client });
     }
 
-    public async listenAuth(client: WhatsappClient, onQrReceive: onQRStringReceive): Promise<void> {
+    public async listenAuth(client: WhatsappClient, onQrReceive: onQrReceived, onAuthSuccess: onAuthSuccess): Promise<void> {
         const log = this.log;
+        const settings = this.manager.Settings;
         const _client = client.instance;
         const authStore = await this.authStore();
         let onAuthenticated = false;
         let authenticated = false;
 
         try {
+            await _client.pupPage?.waitForNavigation();
             await _client.resetState();
         } catch (error) {}
 
-        ['qr', 'authenticated', 'ready'].forEach((event) => _client.removeAllListeners(event));
+        [WawebEvent.QRReceived, WawebEvent.Authenticated, WawebEvent.Ready].forEach((event) => _client.removeAllListeners(event));
 
-        _client.on('qr', (value: string) => onQrReceive(value));
+        _client.on(WawebEvent.QRReceived, (value: string) => onQrReceive(value));
 
-        _client.on('authenticated', async (_: string) => {
+        _client.on(WawebEvent.Authenticated, async (_: string) => {
             onAuthenticated = true;
             authenticated = true;
         });
 
-        _client.on('ready', async () => {
+        _client.on(WawebEvent.Ready, async () => {
             if (onAuthenticated) {
+                onAuthSuccess();
                 const user = _client.info.me.user;
                 if (user != client.phone) {
                     log.warning({ message: `user '${user}' is not match with client '${client.phone}'` });
@@ -82,21 +87,40 @@ export default class Whatsapp {
                     authenticated = false;
                 }
 
-                _client.on('remote_session_saved', async () => {
+                _client.on(WawebEvent.RemoteSessionSaved, async () => {
                     if (!authenticated) {
                         console.log('hapus nih');
                         const deleted = await authStore.delete({ session: client.id });
                         console.log('kehapus?', deleted);
                     }
 
-                    // TODO: post webhook auth data is saved
+                    // TODO: [Webhook][POST] update whatsapp client authorized status
+                    await axios({
+                        method: 'post',
+                        url: `${settings.NODE_ADDRESS}/hook/whatsapp/client`,
+                        data: { number: client.phone, auth: `whatsapp-RemoteAuth-${client.id}` },
+                        headers: { Authorization: await createBasicAuth(settings.INTERNAL_HOOK_USER, settings.INTERNAL_HOOK_SECRET, true) },
+                        validateStatus: (status) => status < 500,
+                    });
+
                     log.info({ message: 'remote session saved', extra: { phoneNumber: user } });
+                    await _client.destroy();
                 });
             }
             log.info({ message: `client ${_client.info.me.user} ready` });
         });
 
-        _client.initialize();
+        try {
+            await _client.initialize();
+        } catch (error) {
+            this.listenAuth(client, onQrReceive, onAuthSuccess);
+        }
+    }
+
+    public async destroyClient(client: WhatsappClient): Promise<void> {
+        try {
+            await client.instance.destroy();
+        } catch (error) {}
     }
 
     public async logout(client: WhatsappClient): Promise<void> {
@@ -115,9 +139,7 @@ export default class Whatsapp {
 
         try {
             await client.instance.initialize();
-        } catch (err) {
-            console.log('error:', err);
-        }
+        } catch (err) {}
 
         return client;
     }

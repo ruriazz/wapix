@@ -1,9 +1,9 @@
 import { type Mongoose } from 'mongoose';
 import { type Express, type NextFunction, type Router, type Request, type Response } from 'express';
-import { type Account } from '@src/entities/@typed';
+import { type Account } from '@entity/@typed';
 import { type JwtPayload } from 'jsonwebtoken';
 import { Redis } from 'ioredis';
-import { Server as SocketServer } from 'socket.io';
+import { Socket, Server as SocketServer } from 'socket.io';
 import WAWebJS from 'whatsapp-web.js';
 
 export type Log = {
@@ -18,7 +18,10 @@ export type Settings = {
     NODE_NAME: string;
     NODE_ENV: string;
     NODE_TZ: string;
+    NODE_ADDRESS: string;
     SECRET_KEY: string;
+    INTERNAL_HOOK_USER: string;
+    INTERNAL_HOOK_SECRET: string;
     UTC_LOG_TZ: boolean;
     MONGO_DSN: string;
     REDIS_STORAGE_URL: string;
@@ -60,6 +63,10 @@ export type ApiContext = {
     authData?: AuthData;
     attribute?: Record<string, any>;
 };
+
+export interface SocketContext extends Socket {
+    authData?: AuthData;
+}
 
 export type WhatsappClient = {
     id: string;

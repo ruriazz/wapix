@@ -24,10 +24,6 @@ export default class Databases implements Interface {
             await this.NoSQL.connect(this._settings.MONGO_DSN, {
                 dbName: this._settings.MONGO_DBNAME,
             });
-
-            this.NoSQL.connection.useDb(this._settings.MONGO_DBNAME, {
-                useCache: true,
-            });
         } catch (err) {
             this._log.warning({
                 message: 'failed connect to mongodb',

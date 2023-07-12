@@ -2,6 +2,18 @@ import { Strings } from '@helpers/transform';
 import { checkSchema } from 'express-validator';
 
 const createEnrollSessionSchema = checkSchema({
+    name: {
+        in: ['body'],
+        trim: true,
+        isEmpty: {
+            negated: true,
+            errorMessage: 'name cannot be blank',
+        },
+        isLength: {
+            options: { min: 2, max: 50 },
+            errorMessage: 'Name must be between 2 and 50 characters',
+        },
+    },
     phoneNumber: {
         in: ['body'],
         isEmpty: {

@@ -21,6 +21,7 @@ type Pagination = {
 class Status {
     // Success
     static Ok: _status = { status: StatusCodes.OK, reason: ReasonPhrases.OK };
+    static Created: _status = { status: StatusCodes.CREATED, reason: ReasonPhrases.CREATED };
     static Accepted: _status = {
         status: StatusCodes.ACCEPTED,
         reason: ReasonPhrases.ACCEPTED,
@@ -68,4 +69,9 @@ const sendJson = (
     ctx.response.status(props?.status?.status || StatusCodes.OK).json(body);
 };
 
-export { Status, sendJson, type Pagination };
+const sendString = (ctx: ApiContext, props: { status?: _status; body?: string; headers?: Record<string, string> } = {}) => {
+    Object.entries(props.headers != null || {}).forEach(([key, value]) => ctx.response.setHeader(key, value));
+    ctx.response.status(props?.status?.status || StatusCodes.OK).send(props.body || '');
+};
+
+export { Status, sendJson, sendString, type Pagination };

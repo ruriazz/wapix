@@ -1,7 +1,7 @@
 import { UpdateInfoData, type Services, UpdateInfoResult } from './domain/@interface';
 import { type AuthData, type AuthenticatedData } from './domain/@interface';
 import { type ApiContext, type Manager } from '@vendor';
-import { type Account, type AuthSession } from '@src/entities/@typed';
+import { type Account, type AuthSession } from '@entity/@typed';
 import newAccountRepository from '@repo/account';
 import newAccountRoleRepositoy from '@repo/accountRole';
 import newAuthSessionRepository from '@repo/authSession';
@@ -109,7 +109,7 @@ const newAccountDomainService = (manager: Manager): Services => {
 
             if (newData.newName) {
                 newData.newName = Strings.removeExtraWhitespace(newData.newName);
-                fieldUpdate['name'] = Strings.toTitleCase(newData.newName);
+                fieldUpdate.name = Strings.toTitleCase(newData.newName);
             }
 
             if (newData.newEmail) {
@@ -118,13 +118,13 @@ const newAccountDomainService = (manager: Manager): Services => {
                     if (existsEmail) {
                         errors.push({ field: 'email', message: 'already in use' });
                     } else {
-                        fieldUpdate['email'] = newData.newEmail;
+                        fieldUpdate.email = newData.newEmail;
                     }
                 }
             }
 
             if (newData.newPassword) {
-                fieldUpdate['password'] = await makePassword(newData.newPassword, staticSettings.PASSWORD_BCRYPTY_ROUND);
+                fieldUpdate.password = await makePassword(newData.newPassword, staticSettings.PASSWORD_BCRYPTY_ROUND);
             }
 
             if (errors.length > 0) {

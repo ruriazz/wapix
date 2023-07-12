@@ -1,10 +1,10 @@
 import Settings from '@core/settings';
 import { staticSettings } from '@const';
-import { Account, AuthSession } from '@src/entities/@typed';
+import { Account, AuthSession } from '@entity/@typed';
 import bcrypt from 'bcrypt';
 import jwt, { type JwtPayload } from 'jsonwebtoken';
 import crypto from 'crypto';
-import { blake2b, blake2bHex } from 'blakejs';
+import { blake2bHex } from 'blakejs';
 
 const settings = new Settings();
 
@@ -95,4 +95,45 @@ const blake2Encode = (text: string, outlen: number = 8) => {
     return hash;
 };
 
-export { makePassword, verifyPassword, createJwt, parseJwt, sha512Encrypt, sha512Verify, sha256Encrypt, sha256Verify, createToken, blake2Encode };
+const createBasicAuth = async (user: string, secret: string, encrypt: boolean = false) => {
+    if (encrypt) {
+        secret = await makePassword(secret);
+    }
+
+    return `Basic ${btoa(`${user}:${secret}`)}`;
+};
+
+const verifyBasicAuth = async (token: string, user: string, secret: string): Promise<boolean> => {
+    try {
+        const decodedToken = atob(token).split(':');
+        if (decodedToken[0] != user) {
+            throw new Error('');
+        }
+
+        if (decodedToken[1] != secret) {
+            const valid = await verifyPassword(decodedToken[1], secret);
+            if (!valid) {
+                throw new Error('');
+            }
+        }
+
+        return true;
+    } catch (error) {
+        return false;
+    }
+};
+
+export {
+    makePassword,
+    verifyPassword,
+    createJwt,
+    parseJwt,
+    sha512Encrypt,
+    sha512Verify,
+    sha256Encrypt,
+    sha256Verify,
+    createToken,
+    blake2Encode,
+    createBasicAuth,
+    verifyBasicAuth,
+};

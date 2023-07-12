@@ -13,6 +13,7 @@
             "@utils/*": ["src/utils/*"],
             "@helpers/*": ["src/utils/helpers/*"],
             "@api/*": ["src/api/*"],
+            "@hook/*": ["src/hooks/*"],
             "@entity/*": ["src/entities/*"],
             "@repo/*": ["src/repositories/*"],
             "@const": ["src/const"],
