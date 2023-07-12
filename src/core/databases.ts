@@ -36,7 +36,7 @@ export default class Databases implements Interface {
     private async _initRedis() {
         const client = new Redis(this._settings.REDIS_STORAGE_URL, {
             maxRetriesPerRequest: 5,
-            connectTimeout: 5,
+            connectTimeout: 10,
         });
 
         try {
