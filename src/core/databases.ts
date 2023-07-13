@@ -1,14 +1,18 @@
-import { type Databases as Interface, type Settings } from '@vendor';
-import mongoose from 'mongoose';
+import { type Databases as Interface } from '@vendor';
+import mongoose, { Mongoose } from 'mongoose';
 import { Redis } from 'ioredis';
 import Log from '@core/log';
+import Settings from '@core/settings';
 
 export default class Databases implements Interface {
-    private readonly _settings;
+    private readonly _settings = new Settings();
     private readonly _log;
 
-    NoSQL = mongoose;
-    Redis = new Redis();
+    NoSQL: Mongoose = mongoose;
+    Redis: Redis = new Redis(this._settings.REDIS_STORAGE_URL, {
+        maxRetriesPerRequest: 5,
+        connectTimeout: 10,
+    });
 
     constructor(settings: Settings) {
         this._settings = settings;
@@ -34,22 +38,14 @@ export default class Databases implements Interface {
     }
 
     private async _initRedis() {
-        const client = new Redis(this._settings.REDIS_STORAGE_URL, {
-            maxRetriesPerRequest: 5,
-            connectTimeout: 10,
-        });
-
         try {
-            await client.ping();
-            this.Redis = client;
+            await this.Redis.ping();
         } catch (err) {
             this._log.warning({
                 message: 'failed connect to redis',
                 extra: { dsn: this._settings.REDIS_STORAGE_URL },
                 error: err,
             });
-        } finally {
-            client.disconnect();
         }
     }
 

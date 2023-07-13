@@ -3,7 +3,7 @@ import { _WhatsappRepository } from './@interface';
 import { WhatsappEnrollSession } from '@entity/@typed';
 
 const newWhatsappRepository = (manager: Manager) => {
-    const redis = manager.Databases.Redis;
+    let redis = manager.Databases.Redis;
 
     return new (class implements _WhatsappRepository {
         async saveEnrollSession(data: WhatsappEnrollSession, seconds: number = 300): Promise<void> {
