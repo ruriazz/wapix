@@ -8,7 +8,7 @@ import axios from 'axios';
 import { staticSettings } from '@src/const';
 
 type onQrReceived = (value: string) => void;
-type onAuthSuccess = () => void;
+type onAuthSuccess = (err: Error | undefined) => void;
 
 export default class Whatsapp {
     private manager: Manager;
@@ -60,7 +60,7 @@ export default class Whatsapp {
         const _client = client.instance;
         const authStore = await this.authStore();
         let onAuthenticated = false;
-        let authenticated = false;
+        let authenticated = true;
 
         try {
             await _client.pupPage?.waitForNavigation();
@@ -78,20 +78,19 @@ export default class Whatsapp {
 
         _client.on(WawebEvent.Ready, async () => {
             if (onAuthenticated) {
-                onAuthSuccess();
                 const user = _client.info.me.user;
                 if (user != client.phone) {
-                    log.warning({ message: `user '${user}' is not match with client '${client.phone}'` });
+                    const message = `user '${user}' is not match with client '${client.phone}'`;
+                    log.warning({ message: message });
 
                     await this.logout(client);
                     authenticated = false;
+                    onAuthSuccess(new Error(message));
                 }
 
                 _client.on(WawebEvent.RemoteSessionSaved, async () => {
                     if (!authenticated) {
-                        console.log('hapus nih');
-                        const deleted = await authStore.delete({ session: client.id });
-                        console.log('kehapus?', deleted);
+                        return await this.logout(client);
                     }
 
                     // TODO: [Webhook][POST] update whatsapp client authorized status
@@ -107,7 +106,11 @@ export default class Whatsapp {
                     await _client.destroy();
                 });
             }
-            log.info({ message: `client ${_client.info.me.user} ready` });
+
+            if (authenticated) {
+                onAuthSuccess(undefined);
+                log.info({ message: `client ${_client.info.me.user} ready` });
+            }
         });
 
         try {
@@ -126,10 +129,9 @@ export default class Whatsapp {
     public async logout(client: WhatsappClient): Promise<void> {
         const auth = await this.remoteAuth(client.id);
         await client.instance.logout();
-        await client.instance.destroy();
         await auth.logout();
         await auth.destroy();
-        await auth.disconnect();
+        await client.instance.destroy();
     }
 
     public async initializeClient(client: WhatsappClient, defaultListener: boolean = true) {

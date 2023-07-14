@@ -9,6 +9,7 @@ import { getUid } from '@helpers/ids';
 import { SocketEvent } from '@utils/socket/socketEvent';
 import newWhatsappDomainSocketService from './socketService';
 import { defaultMessage } from '@const';
+import { getClientCollectionResponse, getClientDetailResponse } from './domain/serializer';
 
 const newWhatsappHandler = (manager: Manager): Handlers => {
     const socketAuth = (socket: Socket, next: Function) => authenticatedSocket(manager, socket, next);
@@ -40,9 +41,29 @@ const newWhatsappHandler = (manager: Manager): Handlers => {
                     wsPath: '/ws',
                     wsNamespace: '/patch/whatsapp/session',
                     wsQuery: { session: enrollData.uid },
-                    page: `http://localhost:8800/enroll-session.html?uid=${enrollData.uid}`,
                 },
             });
+        }
+
+        @authenticatedHandler(manager)
+        async getClientCollection(ctx: ApiContext): Promise<void> {
+            const data = getClientCollectionResponse(await service.getClientCollection(ctx));
+            sendJson(ctx, {
+                data: data,
+            });
+        }
+
+        async getClientDetail(ctx: ApiContext): Promise<void> {
+            const client = await service.getClientDetail(ctx, ctx.request.params.uid);
+            if (!client) {
+                return sendJson(ctx, { status: Status.NotFound, message: `No client found with uid '${ctx.request.params.uid}'` });
+            }
+
+            sendJson(ctx, { data: getClientDetailResponse(client) });
+        }
+
+        async updateClientInfo(ctx: ApiContext): Promise<void> {
+            sendJson(ctx);
         }
 
         async wsPatchSession(io: Namespace): Promise<void> {

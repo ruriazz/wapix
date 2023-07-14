@@ -14,6 +14,13 @@ const newWhatsappDomainService = (manager: Manager): Services => {
             const existClient = await whatsappClientRepo.findOne({ number: enrollData.phoneNumber });
             if (existClient && existClient.status != whatsappClientStatus.UNAUTHORIZED) {
                 return false;
+            } else if (existClient && existClient.status == whatsappClientStatus.UNAUTHORIZED) {
+                const now = new Date();
+                await whatsappClientRepo.updateOne(existClient, {
+                    name: enrollData.name,
+                    createdAt: now,
+                    updatedAt: now,
+                });
             } else if (!existClient) {
                 await whatsappClientRepo.createOne({
                     name: enrollData.name,
@@ -23,6 +30,16 @@ const newWhatsappDomainService = (manager: Manager): Services => {
 
             await whatsappRepo.saveEnrollSession(enrollData);
             return true;
+        }
+
+        async getClientCollection(_: ApiContext): Promise<WhatsappClient[]> {
+            return await whatsappClientRepo.findMany({});
+        }
+
+        async getClientDetail(ctx: ApiContext, uid: string): Promise<WhatsappClient | null> {
+            const client = await whatsappClientRepo.findOne({ uid: uid });
+
+            return client;
         }
     })();
 };

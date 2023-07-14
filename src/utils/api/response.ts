@@ -38,6 +38,11 @@ class Status {
         reason: ReasonPhrases.UNAUTHORIZED,
     };
 
+    static NotFound: _status = {
+        status: StatusCodes.NOT_FOUND,
+        reason: ReasonPhrases.NOT_FOUND,
+    };
+
     static InternalError: _status = {
         status: StatusCodes.INTERNAL_SERVER_ERROR,
         reason: ReasonPhrases.INTERNAL_SERVER_ERROR,

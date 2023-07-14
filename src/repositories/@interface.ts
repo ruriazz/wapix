@@ -23,6 +23,7 @@ export type _WhatsappClientRepository = {
     findOne: (filter: Record<string, any>) => Promise<WhatsappClient | null>;
     createOne: (whatsappClient: WhatsappClient) => Promise<WhatsappClient | null>;
     updateOne: (whatsappClient: WhatsappClient, newData: Record<string, any>) => Promise<boolean>;
+    findMany: (filter: Record<string, any>) => Promise<WhatsappClient[]>;
 };
 
 export type _WhatsappRepository = {

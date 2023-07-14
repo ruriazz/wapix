@@ -44,18 +44,10 @@ const newWhatsappClientRepository = (manager: Manager): _WhatsappClientRepositor
             }
         }
 
-        // async findOne(filter: Record<string, any>, ctx?: ApiContext): Promise<Account | null> {
-        //     try {
-        //         const result = await AccountModel.findOne(filter).exec();
-        //         return await Promise.resolve(result);
-        //     } catch (err) {
-        // manager.Log.error({
-        //     message: 'AccountRepository.findOneByEmail Exception',
-        //     error: err,
-        // });
-        //         return null;
-        //     }
-        // }
+        async findMany(filter: Record<string, any>): Promise<WhatsappClient[]> {
+            const results = await WhatsappClientModel.find(filter).exec();
+            return results;
+        }
     })();
 };
 

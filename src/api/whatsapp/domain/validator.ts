@@ -1,7 +1,8 @@
 import { Strings } from '@helpers/transform';
+import { isUUID } from '@src/utils/helpers/ids';
 import { checkSchema } from 'express-validator';
 
-const createEnrollSessionSchema = checkSchema({
+export const createEnrollSessionSchema = checkSchema({
     name: {
         in: ['body'],
         trim: true,
@@ -48,4 +49,60 @@ const createEnrollSessionSchema = checkSchema({
     },
 });
 
-export { createEnrollSessionSchema };
+export const getClientDetailSchema = checkSchema({
+    uid: {
+        in: ['params'],
+        isEmpty: {
+            negated: true,
+            errorMessage: 'client uid cannot be blank',
+        },
+        custom: {
+            options: (val: string) => {
+                if (!isUUID(val)) {
+                    throw new Error('invalid client uid');
+                }
+
+                return val;
+            },
+        },
+        trim: true,
+    },
+});
+
+export const updateClientInfoSchema = checkSchema({
+    uid: {
+        in: ['params'],
+        isEmpty: {
+            negated: true,
+            errorMessage: 'client uid cannot be blank',
+        },
+        custom: {
+            options: (val: string) => {
+                if (!isUUID(val)) {
+                    throw new Error('invalid client uid');
+                }
+
+                return val;
+            },
+        },
+        trim: true,
+    },
+    name: {
+        in: ['body'],
+        trim: true,
+        isString: true,
+        optional: { options: { nullable: true } },
+        errorMessage: 'Name must be a string and cannot be empty',
+        custom: {
+            options: (val: string) => {
+                if (val !== '') {
+                    if (val.length < 2 || val.length > 50) {
+                        throw new Error('Name must be between 2 and 50 characters');
+                    }
+                }
+
+                return val;
+            },
+        },
+    },
+});

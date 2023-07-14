@@ -25,11 +25,16 @@ const newWhatsappDomainSocketService = (manager: Manager): SocketServices => {
 
                     const onQrReceived = (value: string) =>
                         socket.emit(SocketEvent.ClientAuthentication, { authFor: session.phoneNumber, qrString: value, receivedAt: new Date() });
-                    const onAuthSuccess = async () => {
-                        authenticationSuccess = true;
-                        socket.emit(SocketEvent.ClientAuthenticated, true);
+                    const onAuthSuccess = async (err: Error | undefined) => {
+                        if (err) {
+                            socket.emit(SocketEvent.Error, err.message);
+                        } else {
+                            authenticationSuccess = true;
+                            socket.emit(SocketEvent.ClientAuthenticated, true);
+                            await whatsappClientRepo.updateOne(storedWhatsappClient, { updatedAt: new Date(), status: whatsappClientStatus.PENDING });
+                        }
+
                         await whatsappRepo.removeEnrollSession(session);
-                        await whatsappClientRepo.updateOne(storedWhatsappClient, { updatedAt: new Date(), status: whatsappClientStatus.PENDING });
                         socket.disconnect();
                     };
 
